@@ -24,7 +24,7 @@ validate(){
         echo -e "$r $1 failed $n"s
         exit 1
     else
-        echo -e "$g $1 is succesful $n"
+        echo -e "$g $2 is succesful $n"
     fi
 
 }
