@@ -35,7 +35,7 @@ then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$script_file
     validate $? "creating roboshop user"
 else
-    echo -r "$g roboshop user already exixts $n"
+    echo -e "$y roboshop user already exists $n"
 fi
 checkroot
 dnf module disable nodejs -y &>>$script_file
@@ -68,7 +68,7 @@ validate $? "copying mongo repo file"
 dnf install mongodb-mongosh -y &>>$script_file
 validate $? "installing mongodb client"
 status=$(mongosh --host mongodb.jeev.shop --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
-if [ $status -lt 0]
+if [ $status -lt 0 ]
 then
     echo -e "$y Importing catalogue schema to mongodb $n"
     mongosh --host mongodb.jeev.shop < /app/db/master-data.js &>>$script_file
