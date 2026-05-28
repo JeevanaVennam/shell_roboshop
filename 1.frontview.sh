@@ -21,7 +21,7 @@ checkroot(){
 validate(){
     if [ $? -ne 0 ]
     then
-        echo -e "$r $1 failed $n"s
+        echo -e "$r $2 failed $n"
         exit 1
     else
         echo -e "$g $2 is succesful $n"
