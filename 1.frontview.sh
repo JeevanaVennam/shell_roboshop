@@ -8,6 +8,7 @@ log_folder="/var/log/front_log"
 script_name=$(echo $0 | cut -d "." -f1)
 script_file="$log_folder/$script_name.log"
 script_dir=$(pwd)
+mkdir -p $log_folder
 checkroot(){
     if [ $user_id -ne 0 ]
     then
