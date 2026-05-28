@@ -62,3 +62,16 @@ systemctl enable catalogue &>>$script_file
 validate $? "enabling catalogue services"
 systecmctl start catalogue &>>$script_file
 validate $? "starting catalogue service"
+cp /$script_dir/mongo.repo /etc/yum.repos.d/mongo.repo &>>$script_file
+validate $? "copying mongo repo file"
+dnf install mongodb-mongosh -y &>>$script_file
+validate $? "installing mongodb client"
+status=$(mongosh --host mongodb.jeev.shop --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
+if [ $status -lt 0]
+then
+    echo -e "$y Importing ctaalogue schema to mongodb $n"
+    mongosh --host mongodb.jeev.shop < /app/db/master-data.js &>>$script_file
+    validate $? "loading catalogue schema to mongodb"
+else
+    echo -e "$g catalogue schema is already present in mongodb $n"
+fi
