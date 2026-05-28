@@ -30,7 +30,7 @@ validate(){
 
 }
 checkroot
-cp /$script_dir/mongo.repo /etc/yum/yum.repos.d/mongo.repo &>>$script_file
+cp /$script_dir/mongo.repo /etc/yum.repos.d/mongo.repo &>>$script_file
 validate $? "copying mongo repo file"
 dnf install mongodb-org -y &>>$script_file
 validate $? "installing mongodb"
