@@ -44,15 +44,16 @@ dnf module enable nodejs:20 -y &>>$script_file
 validate $? "enabling nodejs 20"
 dnf install nodejs -y &>>$script_file
 validate $? "installing nodejs"
+
 mkdir -p /app &>>$script_file
 validate $? "creating application directory"
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>script_file
+curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$script_file
 validate $? "downloading catalogue content"
-cd /app $>>script_file
+cd /app &>>$script_file
 validate $? "changing directory to application directory"
 unzip /tmp/catalogue.zip &>>$script_file
 validate $? "unzipping catalogue content"
-npm install &>>script_file
+npm install &>>$script_file
 validate $? "installing nodejs dependencies"
 cp /$script_dir/catalogue.service /etc/systemd/system/catalogue.service &>>$script_file
 validate $? "copying catalogue systemd service file"
@@ -60,7 +61,7 @@ systemctl daemon-reload &>>$script_file
 validate $? "reloading systemd daemon"
 systemctl enable catalogue &>>$script_file
 validate $? "enabling catalogue services"
-systecmctl start catalogue &>>$script_file
+systemctl start catalogue &>>$script_file
 validate $? "starting catalogue service"
 cp /$script_dir/mongo.repo /etc/yum.repos.d/mongo.repo &>>$script_file
 validate $? "copying mongo repo file"
@@ -69,7 +70,7 @@ validate $? "installing mongodb client"
 status=$(mongosh --host mongodb.jeev.shop --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
 if [ $status -lt 0]
 then
-    echo -e "$y Importing ctaalogue schema to mongodb $n"
+    echo -e "$y Importing catalogue schema to mongodb $n"
     mongosh --host mongodb.jeev.shop < /app/db/master-data.js &>>$script_file
     validate $? "loading catalogue schema to mongodb"
 else
