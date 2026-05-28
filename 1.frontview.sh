@@ -18,7 +18,7 @@ checkroot(){
     fi
 }
 validate(){
-    if [ $? -ne 0]
+    if [ $? -ne 0 ]
     then
         echo -e "$r $1 failed $n"s
         exit 1
