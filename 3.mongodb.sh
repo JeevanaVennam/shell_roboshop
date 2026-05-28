@@ -1,6 +1,6 @@
 #!/bin/bash
 user_id=$(id -u)
-r="e\31m"
+r="\e[31m"
 g="\e[32m"
 y="\e[33m"
 n="\e[0m"
