@@ -28,6 +28,9 @@ validate(){
     fi
 
 }
+
+#user roboshop is created cause nodejs doesnt run have system default user
+
 id roboshop &>>$script_file
 if [ $? -ne 0 ]
 then
@@ -47,12 +50,19 @@ validate $? "installing nodejs"
 
 mkdir -p /app &>>$script_file
 validate $? "creating application directory"
+
+
+
+
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$script_file
 validate $? "downloading catalogue content"
+rm -rf /app/* &>>$script_file
 cd /app &>>$script_file
 validate $? "changing directory to application directory"
+
 unzip /tmp/catalogue.zip &>>$script_file
 validate $? "unzipping catalogue content"
+
 npm install &>>$script_file
 validate $? "installing nodejs dependencies"
 cp /$script_dir/catalogue.service /etc/systemd/system/catalogue.service &>>$script_file
