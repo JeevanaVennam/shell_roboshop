@@ -38,7 +38,7 @@ systemctl enable redis &>>$script_file
 validate $? "enabling redis service"
 systemctl start redis &>>$script_file
 validate $? "starting redis service"
-sed -i 's/127.0.0.1/0.0.0.0/g' /etc/redis.conf
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/redis/redis.conf
 validate $? "allowing remote connection to redis"
 systemctl restart redis &>>$script_file
 validate $? "restarting redis service"
