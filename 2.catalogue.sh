@@ -1,4 +1,8 @@
 #!/bin/bash
+#prerequisites
+#create two files 
+#catalogue.service file to run the services
+#mongo.repo file to install mongodb client
 r="\e[31m"
 g="\e[32m"
 y="\e[33m"
@@ -73,12 +77,14 @@ systemctl enable catalogue &>>$script_file
 validate $? "enabling catalogue services"
 systemctl start catalogue &>>$script_file
 validate $? "starting catalogue service"
+
+
 cp /$script_dir/mongo.repo /etc/yum.repos.d/mongo.repo &>>$script_file
 validate $? "copying mongo repo file"
 dnf install mongodb-mongosh -y &>>$script_file
 validate $? "installing mongodb client"
 status=$(mongosh --host mongodb.jeev.shop --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
-if [ $status -lt 0 ]
+if [ "$status" -lt 0 ]
 then
     echo -e "$y Importing catalogue schema to mongodb $n"
     mongosh --host mongodb.jeev.shop < /app/db/master-data.js &>>$script_file
