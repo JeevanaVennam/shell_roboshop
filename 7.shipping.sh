@@ -37,29 +37,60 @@ else
     echo -e "$y roboshop user already exists $n"
 fi
 checkroot
+
 dnf install maven -y &>>$script_file
 validate $? "installing maven"
+
 mkdir -p /app &>>$script_file
 validate $? "creating application directory"
+
 curl -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip &>>$script_file
 validate $? "downloading shipping content"
+
 cd /app &>>$script_file
 validate $? "changing directory to application directory"
+
 rm -rf /app/* &>>$script_file
 validate $? "clearing application directory"
+
 unzip /tmp/shipping.zip &>>$script_file
 validate $? "unzipping shipping content"
+
 mv clean package &>>$script_file
 validate $? "packaging the application"
+
 mv target/shipping-1.0.jar shipping.jar &>>$script_file
 validate $? "moving jar file"
+
 cp /$script_dir/shipping.service /etc/systemd/system/shipping.service &>>$
 validate $? "copying shipping service file"
+
 systemctl daemon-reload &>>$script_file
 validate $? "relaoding systemd daemon files"
+
 systemctl enable shipping &>>$script_file
 validate $? "enabling shipping service"
+
 systemctl start shipping &>>$script_file
 validate $? "starting shipping service"
-echo -e "$g Shipping setup completed and script execution is successful $n"
-   
+
+dnf install mysql -y &>>$script_file
+validate $? "installing mysql client"
+
+mysql -h mysql.jeev.shop -u root -p $mysql_root_password  -e 'use cities' &>>$script_file
+if [ $? -ne 0 ]
+then
+    mysql -h mysql.jeev.shop -u root -p $mysql_root_password < /app/db/schema.sql &>>$script_file
+    mysql -h mysql.jeev,shop -u root -p $mysql_root_password < /app/db/cities.sql &>>$script_file
+    mysql -h mysql.jeev.shop -u root -p $mysql_root_password < /app/db/shipping.sql &>>$script_file
+else
+    echo -e "$y shipping schema is already loaded into mysql $n"
+fi
+
+systemctl restart shipping &>>$script_file
+validate $? "restarting shipping service"
+
+end_time=$(date +%s)
+total_time=$(($end_time - $start_time))
+
+echo -e "$g script execution completed suscessfully, $y time taken: $tital_time seconds $n" | tee -a $script_file
